@@ -1,0 +1,149 @@
+# =============================================================================
+# Daily QA Automation - Saleads
+# Ejecuta tests E2E (Cucumber + Playwright + Allure) diariamente a las 7 PM Colombia
+# y envía el reporte por email. Ejecución manual disponible con workflow_dispatch.
+# =============================================================================
+
+name: Daily QA Automation
+
+on:
+  schedule:
+    # 7:00 PM Colombia (UTC-5) = 00:00 UTC (medianoche)
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  qa-automation:
+    name: Run QA Tests & Report
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    steps:
+      # -----------------------------------------------------------------------
+      # Checkout y configuración del entorno
+      # -----------------------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Setup Java (for Allure)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      # -----------------------------------------------------------------------
+      # Ejecución de tests (Allure formatter para generar resultados)
+      # -----------------------------------------------------------------------
+      - name: Run Cucumber tests with Allure
+        id: run-tests
+        run: |
+          npx cucumber-js --format progress-bar --format allure-cucumberjs/reporter \
+            --import support/env.js --import support/world.js --import support/hooks.js --import step-definitions/login.steps.js
+        continue-on-error: true
+
+      - name: Set execution date
+        id: date
+        if: always()
+        run: echo "date=$(date -u '+%Y-%m-%d %H:%M UTC')" >> $GITHUB_OUTPUT
+
+      # -----------------------------------------------------------------------
+      # Generación de reportes
+      # -----------------------------------------------------------------------
+      - name: Generate Allure report
+        if: always()
+        run: |
+          mkdir -p allure-results allure-report
+          npx allure generate allure-results --clean || true
+
+      - name: Prepare Playwright report directory
+        if: always()
+        run: mkdir -p playwright-report report
+
+      # -----------------------------------------------------------------------
+      # Publicar reportes como artifacts
+      # -----------------------------------------------------------------------
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-${{ github.run_number }}
+          path: allure-results/
+          retention-days: 30
+
+      - name: Upload Allure report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report-${{ github.run_number }}
+          path: allure-report/
+          retention-days: 30
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.run_number }}
+          path: |
+            playwright-report/
+            report/
+          retention-days: 30
+          if-no-files-found: ignore
+
+      # -----------------------------------------------------------------------
+      # Empaquetar reporte Allure para email
+      # -----------------------------------------------------------------------
+      - name: Zip Allure report for email
+        if: always()
+        run: |
+          if [ -d allure-report ] && [ "$(ls -A allure-report 2>/dev/null)" ]; then
+            cd allure-report && zip -rq ../allure-report.zip . && cd ..
+          else
+            touch allure-report.zip
+          fi
+
+      # -----------------------------------------------------------------------
+      # Envío de reporte por email
+      # -----------------------------------------------------------------------
+      - name: Send QA report by email
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.EMAIL_SMTP_SERVER || 'smtp.gmail.com' }}
+          server_port: ${{ secrets.EMAIL_SMTP_PORT || '587' }}
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          secure: false
+          subject: "[QA Saleads] Ejecución ${{ steps.run-tests.outcome == 'success' && 'EXITOSA' || 'CON FALLOS' }} - ${{ github.run_number }}"
+          to: jhonny100379@gmail.com, QA_engineer@saleads.ai
+          from: ${{ secrets.EMAIL_USERNAME }}
+          body: |
+            Estimado equipo,
+
+            Se ha completado la ejecución automática de las pruebas QA del proyecto Saleads.
+
+            **Resultado:** ${{ steps.run-tests.outcome == 'success' && 'SUCCESS' || 'FAILURE' }}
+            **Fecha/Hora:** ${{ steps.date.outputs.date }}
+            **Workflow run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Los reportes detallados (Allure y artifacts) están disponibles en GitHub Actions.
+            Adjunto se incluye el reporte Allure comprimido para su revisión.
+
+            Atentamente,
+            Automatización QA - Saleads
+          attachments: allure-report.zip
+        continue-on-error: true

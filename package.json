@@ -1,0 +1,29 @@
+{
+  "name": "saleads-automation",
+  "version": "1.0.0",
+  "description": "Automatización QA con Playwright, BDD Gherkin y POM - Saleads.ai",
+  "type": "module",
+  "scripts": {
+    "test": "cucumber-js --import support/env.js --import support/world.js --import support/hooks.js --import step-definitions/login.steps.js",
+    "test:headed": "cross-env HEADLESS=false cucumber-js --import support/env.js --import support/world.js --import support/hooks.js --import step-definitions/login.steps.js",
+    "test:ver": "cross-env HEADLESS=false PAUSE_AFTER_SECONDS=10 cucumber-js --import support/env.js --import support/world.js --import support/hooks.js --import step-definitions/login.steps.js",
+    "test:report": "npm run test && npx playwright show-report report/playwright",
+    "report": "npx playwright show-report report/playwright",
+    "test:allure": "cucumber-js --format progress-bar --format allure-cucumberjs/reporter --import support/env.js --import support/world.js --import support/hooks.js --import step-definitions/login.steps.js & npx allure serve allure-results",
+    "test:allure:ver": "cross-env HEADLESS=false cucumber-js --format progress-bar --format allure-cucumberjs/reporter --import support/env.js --import support/world.js --import support/hooks.js --import step-definitions/login.steps.js & npx allure serve allure-results",
+    "allure:generate": "npx allure generate allure-results --clean",
+    "allure:open": "npx allure open allure-report"
+  },
+  "keywords": ["playwright", "cucumber", "bdd", "gherkin", "qa", "automation"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.0.0",
+    "allure-commandline": "^2.36.0",
+    "allure-cucumberjs": "^3.0.0",
+    "cross-env": "^7.0.3",
+    "@playwright/test": "^1.49.0",
+    "playwright": "^1.49.0",
+    "dotenv": "^16.4.5"
+  }
+}
