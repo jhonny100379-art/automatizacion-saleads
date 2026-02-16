@@ -8,7 +8,7 @@ Before(async function () {
 });
 
 After(async function () {
-  const segundos = parseInt(process.env.PAUSE_AFTER_SECONDS || '0', 10);
+  const segundos = parseInt(process.env.PAUSE_AFTER_SECONDS || '8', 10);
   if (segundos > 0) {
     await new Promise((r) => setTimeout(r, segundos * 1000));
   }

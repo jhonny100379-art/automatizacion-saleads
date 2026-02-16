@@ -26,6 +26,8 @@ export class KeycloakLoginPage extends BasePage {
     const url = authUrl || this.getDefaultAuthUrl();
     await this.goto(url);
     await this.page.waitForLoadState('domcontentloaded').catch(() => {});
+    const pausaInicialMs = parseInt(process.env.PAUSE_AFTER_PAGE_LOAD_MS || '6000', 10);
+    if (pausaInicialMs > 0) await new Promise((r) => setTimeout(r, pausaInicialMs));
   }
 
   getDefaultAuthUrl() {
@@ -78,7 +80,7 @@ export class KeycloakLoginPage extends BasePage {
     if (await opcionVisible.isVisible().catch(() => false)) {
       await opcionVisible.click({ timeout: 5000 });
       await this.page.waitForLoadState('networkidle').catch(() => {});
-      const pausaMs = parseInt(process.env.PAUSE_AFTER_LANGUAGE_MS || '2500', 10);
+      const pausaMs = parseInt(process.env.PAUSE_AFTER_LANGUAGE_MS || '12000', 10);
       if (pausaMs > 0) await new Promise((r) => setTimeout(r, pausaMs));
       return;
     }
@@ -88,7 +90,7 @@ export class KeycloakLoginPage extends BasePage {
     const opcionMenu = this.page.locator(`a[id^="language-"]`).filter({ hasText: regexIdioma }).first();
     await opcionMenu.click({ timeout: 5000 });
     await this.page.waitForLoadState('networkidle').catch(() => {});
-    const pausaMs = parseInt(process.env.PAUSE_AFTER_LANGUAGE_MS || '2500', 10);
+    const pausaMs = parseInt(process.env.PAUSE_AFTER_LANGUAGE_MS || '12000', 10);
     if (pausaMs > 0) {
       await new Promise((r) => setTimeout(r, pausaMs));
     }
@@ -104,6 +106,50 @@ export class KeycloakLoginPage extends BasePage {
     const titulo = this.page.locator('h1, h2, [class*="title"], [class*="heading"]').filter({ hasText: regex }).first();
     if (await titulo.isVisible().catch(() => false)) return true;
     return this.page.getByText(regex).first().isVisible().catch(() => false);
+  }
+
+  /** Clic en el botón Microsoft (puede abrir popup o redirigir en la misma pestaña) */
+  async clickBotonMicrosoft() {
+    const boton = this.page.locator(this.selectors.botonMicrosoft).first();
+    await boton.click({ timeout: 10000 });
+  }
+
+  /** Espera un modal que contenga el texto indicado y hace clic en el botón Comenzar */
+  async enModalConTextoClicComenzar(textoModal) {
+    const regex = new RegExp(textoModal, 'i');
+    await this.page.getByText(regex).waitFor({ state: 'visible', timeout: 15000 });
+    await this.page.getByRole('button', { name: /Comenzar/i }).click({ timeout: 10000 });
+  }
+
+  /** Espera el modal "Conecta tu cuenta de Meta" y hace clic en la X para cerrarlo */
+  async enModalConectaMetaClicX() {
+    await this.page.getByText(/Conecta tu cuenta de Meta/i).waitFor({ state: 'visible', timeout: 15000 });
+    const modal = this.page.locator('[role="dialog"], [class*="modal"], [class*="Modal"]').filter({ hasText: /Conecta tu cuenta de Meta/i }).first();
+    const xButton = modal.getByRole('button', { name: /cerrar|close|x|×/i }).or(modal.locator('[class*="close"], [aria-label*="lose"], [aria-label*="errar"]')).first();
+    await xButton.click({ timeout: 8000 });
+  }
+
+  /**
+   * Cierra la ventana emergente de Microsoft (como en el video: clic en X).
+   * - Si se abrió un popup: espera un momento para que se vea, luego lo cierra (equivalente a la X del navegador).
+   * - Si no hay popup y la pestaña actual es Microsoft: intenta clic en Cancel/Volver o hace goBack.
+   */
+  async cerrarVentanaEmergenteMicrosoft(popupPage) {
+    const pausaAntesCerrarMs = parseInt(process.env.PAUSE_BEFORE_CLOSE_MICROSOFT_MS || '2500', 10);
+    if (popupPage && !popupPage.isClosed()) {
+      if (pausaAntesCerrarMs > 0) await new Promise((r) => setTimeout(r, pausaAntesCerrarMs));
+      await popupPage.close();
+      return;
+    }
+    const url = this.page.url();
+    if (/login\.microsoftonline|microsoft\.com|live\.com/.test(url)) {
+      const cancel = this.page.getByRole('button', { name: /cancel|volver|cerrar/i }).or(this.page.locator('a:has-text("Cancel"), a:has-text("Volver")')).first();
+      if (await cancel.isVisible().catch(() => false)) {
+        await cancel.click({ timeout: 5000 }).catch(() => {});
+      } else {
+        await this.page.goBack({ timeout: 10000 }).catch(() => {});
+      }
+    }
   }
 
   /** Pantalla inicial: título "Acceder a tu cuenta" + botones Google y Microsoft */

@@ -22,12 +22,61 @@ Then('debo ver la pantalla {string} con las opciones de Google y Microsoft', asy
   expect(visible).toBeTruthy();
 });
 
+When('hago clic en el botón Microsoft', async function () {
+  this.popupMicrosoft = null;
+  const context = this.page.context();
+  try {
+    const [popup] = await Promise.all([
+      context.waitForEvent('page', { timeout: 15000 }),
+      this.loginPage.clickBotonMicrosoft(),
+    ]);
+    this.popupMicrosoft = popup;
+  } catch {
+    this.popupMicrosoft = null;
+  }
+});
+
+When('cierro la ventana emergente de Microsoft', async function () {
+  await this.loginPage.cerrarVentanaEmergenteMicrosoft(this.popupMicrosoft || null);
+  this.popupMicrosoft = null;
+  await this.page.waitForLoadState('domcontentloaded').catch(() => {});
+});
+
+When('cierro la ventana de Microsoft con la X', async function () {
+  await this.loginPage.cerrarVentanaEmergenteMicrosoft(this.popupMicrosoft || null);
+  this.popupMicrosoft = null;
+  await this.page.waitForLoadState('domcontentloaded').catch(() => {});
+});
+
+Then('debo permanecer en la pantalla de acceso con Google y Microsoft', async function () {
+  const visible = await this.loginPage.isAccessScreenWithGoogleAndMicrosoftVisible();
+  expect(visible).toBeTruthy();
+});
+
+When('en el modal {string} doy clic en el botón Comenzar', async function (textoModal) {
+  await this.loginPage.enModalConTextoClicComenzar(textoModal);
+});
+
+When('en el modal {string} doy clic en la X', async function (_textoModal) {
+  await this.loginPage.enModalConectaMetaClicX();
+});
+
 When('selecciono el idioma {string}', async function (nombreIdioma) {
   await this.loginPage.seleccionarIdioma(nombreIdioma);
 });
 
 Then('la pantalla debe mostrarse en el idioma {string}', async function (nombreIdioma) {
   const ok = await this.loginPage.estaEnIdioma(nombreIdioma);
+  expect(ok).toBeTruthy();
+});
+
+Then('la pantalla debe mostrarse en inglés', async function () {
+  const ok = await this.loginPage.estaEnIdioma('English');
+  expect(ok).toBeTruthy();
+});
+
+Then('la pantalla debe mostrarse en español', async function () {
+  const ok = await this.loginPage.estaEnIdioma('Español');
   expect(ok).toBeTruthy();
 });
 

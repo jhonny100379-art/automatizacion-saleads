@@ -18,11 +18,18 @@ class World {
     if (this.browser) return;
     this.browser = await chromium.launch({
       headless: process.env.HEADLESS !== 'false',
-      slowMo: process.env.SLOW_MO ? parseInt(process.env.SLOW_MO, 10) : 0,
+      slowMo: process.env.SLOW_MO !== undefined ? parseInt(process.env.SLOW_MO, 10) : (process.env.HEADLESS === 'false' ? 80 : 0),
+      args: [
+        '--disable-features=TranslateUI,Translate',
+        '--disable-translate',
+        '--lang=es-CO',
+        '--no-first-run',
+      ],
     });
     this.context = await this.browser.newContext({
       viewport: { width: 1280, height: 720 },
       ignoreHTTPSErrors: true,
+      locale: 'es-CO',
     });
     this.page = await this.context.newPage();
   }

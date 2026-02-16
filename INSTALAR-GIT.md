@@ -35,3 +35,20 @@ git --version
 ```
 
 Si ves algo como `git version 2.x.x`, ya puedes usar `git add`, `git commit` y `git push`.
+
+---
+
+## Primera vez: subir a GitHub
+
+Si acabas de hacer `git init` y tu proyecto aún no está en GitHub:
+
+1. Crea un repositorio nuevo en GitHub (sin README, sin .gitignore).
+2. En la carpeta del proyecto ejecuta (sustituye `TU_USUARIO` y `TU_REPO`):
+
+```powershell
+git remote add origin https://github.com/TU_USUARIO/TU_REPO.git
+git branch -M main
+git push -u origin main
+```
+
+Si el repo ya existe y solo faltaba inicializar Git, con `git remote add origin ...` y `git push -u origin main` basta.
