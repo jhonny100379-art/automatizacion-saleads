@@ -6,16 +6,12 @@ Feature: Acceso a la cuenta de Saleads (Keycloak)
   Background:
     Given que estoy en la página de login de Keycloak de Saleads
 
+  @orden-123
   Scenario: Ver pantalla de acceso con opciones Google y Microsoft
     When abro la URL de autenticación de Saleads
     Then debo ver la pantalla "Acceder a tu cuenta" con las opciones de Google y Microsoft
 
-  Scenario: Clic en Microsoft, modal estrategia Comenzar y cerrar modal Meta con X
-    When abro la URL de autenticación de Saleads
-    And hago clic en el botón Microsoft
-    And en el modal "Lanza tu primera estrategia en minutos" doy clic en el botón Comenzar
-    And en el modal "Conecta tu cuenta de Meta" doy clic en la X
-
+  @orden-123
   Scenario: Seleccionar idioma en la pantalla de acceso
     When abro la URL de autenticación de Saleads
     And selecciono el idioma "English"

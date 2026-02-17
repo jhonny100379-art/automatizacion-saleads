@@ -6,6 +6,12 @@ Given('que estoy en la página de login de Keycloak de Saleads', async function 
   this.loginPage = new KeycloakLoginPage(this.page, this.baseUrl);
 });
 
+Given('que el usuario está en la pantalla de login', async function () {
+  this.loginPage = new KeycloakLoginPage(this.page, this.baseUrl);
+  const authUrl = process.env.AUTH_URL || this.loginPage.getDefaultAuthUrl();
+  await this.loginPage.navigateToLogin(authUrl);
+});
+
 When('abro la URL de autenticación de Saleads', async function () {
   const authUrl = process.env.AUTH_URL || this.loginPage.getDefaultAuthUrl();
   await this.loginPage.navigateToLogin(authUrl);

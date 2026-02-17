@@ -38,17 +38,22 @@ Si ves algo como `git version 2.x.x`, ya puedes usar `git add`, `git commit` y `
 
 ---
 
-## Primera vez: subir a GitHub
+## Primera vez: subir a GitHub (ya tienes cuenta)
 
-Si acabas de hacer `git init` y tu proyecto aún no está en GitHub:
+1. **Crea un repositorio nuevo en GitHub**
+   - Entra en https://github.com/new
+   - Nombre del repo (ej.: `automatizacion-saleads` o `saleads-qa`)
+   - Elige **público** o privado
+   - No marques "Add a README" ni .gitignore (el proyecto ya los tiene)
+   - Clic en **Create repository**
 
-1. Crea un repositorio nuevo en GitHub (sin README, sin .gitignore).
-2. En la carpeta del proyecto ejecuta (sustituye `TU_USUARIO` y `TU_REPO`):
+2. **Conectar tu proyecto local con ese repo** (sustituye `TU_USUARIO` y `NOMBRE_REPO` por los tuyos):
 
 ```powershell
-git remote add origin https://github.com/TU_USUARIO/TU_REPO.git
-git branch -M main
+cd "C:\Users\jhonn\OneDrive\Documentos\Automatización_saleads.ai"
+git remote remove origin
+git remote add origin https://github.com/TU_USUARIO/NOMBRE_REPO.git
 git push -u origin main
 ```
 
-Si el repo ya existe y solo faltaba inicializar Git, con `git remote add origin ...` y `git push -u origin main` basta.
+Si GitHub te pide usuario/contraseña, usa tu **usuario de GitHub** y un **Personal Access Token** (no la contraseña de la cuenta). Crear token: GitHub → Settings → Developer settings → Personal access tokens → Generate new token (permisos `repo`).
