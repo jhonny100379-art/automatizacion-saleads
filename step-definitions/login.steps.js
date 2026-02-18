@@ -42,6 +42,31 @@ When('hago clic en el botón Microsoft', async function () {
   }
 });
 
+When('ingreso el correo de Microsoft {string}', async function (correo) {
+  const page = this.popupMicrosoft && !this.popupMicrosoft.isClosed() ? this.popupMicrosoft : this.page;
+  const selector = 'input[name="loginfmt"], #i0116, input[type="email"]';
+  await page.waitForSelector(selector, { state: 'visible', timeout: 15000 });
+  await page.fill(selector, correo);
+});
+
+When('doy clic en el botón Siguiente', async function () {
+  const page = this.popupMicrosoft && !this.popupMicrosoft.isClosed() ? this.popupMicrosoft : this.page;
+  const nextButton = page.locator('input[type="submit"], #idSIButton9, button[type="submit"], input[value*="Siguiente" i], input[value*="Next" i]').first();
+  await nextButton.waitFor({ state: 'visible', timeout: 10000 });
+  await nextButton.click({ timeout: 5000 });
+});
+
+When('cuando pida el PIN ingreso {string}', async function (pin) {
+  const page = this.popupMicrosoft && !this.popupMicrosoft.isClosed() ? this.popupMicrosoft : this.page;
+  const pinSelector = 'input[name="passwd"], input[type="password"], #i0118, input[id*="password"], input[inputmode="numeric"]';
+  await page.waitForSelector(pinSelector, { state: 'visible', timeout: 15000 });
+  await page.fill(pinSelector, pin);
+  const submitButton = page.locator('input[type="submit"], #idSIButton9, button[type="submit"], input[value*="Iniciar" i], input[value*="Sign in" i]').first();
+  if (await submitButton.isVisible().catch(() => false)) {
+    await submitButton.click({ timeout: 5000 }).catch(() => {});
+  }
+});
+
 When('cierro la ventana emergente de Microsoft', async function () {
   await this.loginPage.cerrarVentanaEmergenteMicrosoft(this.popupMicrosoft || null);
   this.popupMicrosoft = null;
