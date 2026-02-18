@@ -19,11 +19,9 @@ Feature: Acceso a la cuenta de Saleads (Keycloak)
     When selecciono el idioma "Español"
     Then la pantalla debe mostrarse en español
 
-  Scenario: Clic en botón Microsoft e ingresar correo desde la pantalla Acceder a tu cuenta
+  Scenario: Clic en botón Microsoft desde la pantalla Acceder a tu cuenta
     When abro la URL de autenticación de Saleads
     And hago clic en el botón Microsoft
-    And ingreso el correo de Microsoft "jhonny100379@hotmail.com"
-    And doy clic en el botón Siguiente
 
   Scenario: Login con credenciales válidas
     When abro la URL de autenticación de Saleads

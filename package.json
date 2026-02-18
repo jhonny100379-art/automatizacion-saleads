@@ -16,7 +16,8 @@
     "allure:generate": "npx allure generate allure-results --clean",
     "allure:open": "npx allure open allure-report",
     "test:allure:fresh": "npm run allure:clean && npm run test:allure:ver",
-    "test:headless": "cucumber-js --import support/env.js --import support/world.js --import support/hooks.js --import step-definitions/login.steps.js"
+    "test:headless": "cucumber-js --import support/env.js --import support/world.js --import support/hooks.js --import step-definitions/login.steps.js",
+    "login": "node tests/login.js"
   },
   "keywords": [
     "playwright",

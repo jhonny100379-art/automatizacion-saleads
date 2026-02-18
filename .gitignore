@@ -4,6 +4,7 @@ playwright-report/
 test-results/
 allure-results/
 allure-report/
+chromium-profile/
 .env
 .env.local
 *.log
