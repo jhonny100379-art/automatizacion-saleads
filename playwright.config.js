@@ -11,17 +11,21 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 /** Ruta del perfil persistente de Chromium (login manual una vez, sesión guardada) */
 export const CHROMIUM_PROFILE_PATH = path.join(__dirname, 'chromium-profile');
 
-/** Opciones para launchPersistentContext: desactiva WebAuthn y usa perfil persistente */
+/** Opciones para launchPersistentContext: desactiva WebAuthn y reduce detección de automatización (Google) */
 export const persistentContextOptions = {
   headless: false,
   args: [
     '--disable-features=WebAuthentication',
     '--disable-webauthn',
+    '--disable-blink-features=AutomationControlled',
   ],
   viewport: { width: 1280, height: 720 },
   ignoreHTTPSErrors: true,
   locale: 'es-CO',
 };
+
+/** Quitar flag --enable-automation para que Google no bloquee el login (usar en login y en world) */
+export const IGNORE_AUTOMATION_FLAG = ['--enable-automation'];
 
 export default defineConfig({
   testDir: './',

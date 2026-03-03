@@ -73,6 +73,18 @@ npm run test:allure:ver
 
 El servidor del reporte permanece activo hasta que cierres la terminal (Ctrl+C).
 
+### Sesión persistente (npm run login)
+
+Para que los tests no pidan correo ni contraseña cada vez:
+
+```bash
+npm run login
+```
+
+- Se abre el navegador (Chrome si está instalado, si no Chromium) con opciones que reducen el bloqueo de Google ("No puedes acceder").
+- Inicia sesión (con Google, Microsoft o usuario/contraseña) y al terminar presiona **Enter** en la consola. La sesión se guarda en `chromium-profile/`.
+- Si **Google sigue bloqueando**: pon en `.env` tu usuario de pruebas (`TEST_USER` y `TEST_PASSWORD`) y en la pantalla de Keycloak elige **"Iniciar sesión con usuario y contraseña"**; el script intentará iniciar sesión automáticamente y guardar la sesión.
+
 ## Casos de prueba incluidos
 
 - **Ver formulario de login**: Navegar a la URL de Keycloak y comprobar que el formulario de login está visible.

@@ -2,6 +2,7 @@ import { setWorldConstructor } from '@cucumber/cucumber';
 import { chromium } from 'playwright';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { persistentContextOptions, IGNORE_AUTOMATION_FLAG } from '../playwright.config.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CHROMIUM_PROFILE_PATH = path.join(__dirname, '..', 'chromium-profile');
@@ -12,6 +13,7 @@ const usePersistentProfile = process.env.USE_PERSISTENT_PROFILE === 'true' || !p
 /**
  * World de Cucumber: mantiene el contexto del navegador y las páginas.
  * Si usePersistentProfile: usa el mismo perfil que npm run login (sesión guardada, sin pedir correo/PIN).
+ * Mismas opciones anti-detección que npm run login para evitar bloqueos de Google.
  */
 class World {
   constructor({ parameters }) {
@@ -30,6 +32,7 @@ class World {
       '--disable-features=TranslateUI,Translate,WebAuthentication',
       '--disable-translate',
       '--disable-webauthn',
+      '--disable-blink-features=AutomationControlled',
       '--lang=es-CO',
       '--no-first-run',
     ];
@@ -41,6 +44,7 @@ class World {
         viewport: { width: 1280, height: 720 },
         ignoreHTTPSErrors: true,
         locale: 'es-CO',
+        ignoreDefaultArgs: IGNORE_AUTOMATION_FLAG,
         slowMo: process.env.SLOW_MO !== undefined ? parseInt(process.env.SLOW_MO, 10) : (headless ? 0 : 80),
       });
       this.page = this.context.pages()[0] || await this.context.newPage();
