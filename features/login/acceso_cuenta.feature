@@ -19,6 +19,10 @@ Feature: Acceso a la cuenta de Saleads (Keycloak)
     When selecciono el idioma "Español"
     Then la pantalla debe mostrarse en español
 
+  Scenario: Clic en el botón Google desde la pantalla Acceder a tu cuenta
+    When abro la URL de autenticación de Saleads
+    And hago clic en el botón Google
+
   Scenario: Clic en botón Microsoft desde la pantalla Acceder a tu cuenta
     When abro la URL de autenticación de Saleads
     And hago clic en el botón Microsoft

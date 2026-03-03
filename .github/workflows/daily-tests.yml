@@ -8,7 +8,7 @@ name: Daily QA Automation
 
 on:
   schedule:
-    # 7:00 PM Colombia (UTC-5) = 00:00 UTC (medianoche)
+    # Siempre en UTC: 0 0 * * * = 00:00 UTC (12 AM UTC) = 19:00 (7 PM) hora Colombia del día anterior
     - cron: '0 0 * * *'
   workflow_dispatch:
 

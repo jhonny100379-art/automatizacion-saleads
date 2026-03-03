@@ -31,7 +31,7 @@ cp .env.example .env
 
 Edita `.env` y configura (opcional):
 
-- `BASE_URL` – Base de Keycloak (por defecto: https://keycloak.saleads.ai)
+- `BASE_URL` – Base de Keycloak (por defecto: https://keycloak-qa.saleads.ai)
 - `TEST_USER` / `TEST_PASSWORD` – Credenciales de prueba para login
 - `AUTH_URL` – URL completa de login (si usas la URL con `code_challenge` de tu app, pégala aquí)
 - `HEADLESS=false` – Para ver el navegador durante las pruebas
@@ -39,7 +39,7 @@ Edita `.env` y configura (opcional):
 Para usar la URL exacta de acceso a cuenta (con PKCE):
 
 ```env
-AUTH_URL=https://keycloak.saleads.ai/realms/sale-ads/protocol/openid-connect/auth?response_type=code&client_id=front&redirect_uri=https%3A%2F%2Fsaleads.ai%2Fapi%2Fauth%2Fcallback%2Fkeycloak&scope=openid+email+profile+offline_access&code_challenge=...&code_challenge_method=S256
+AUTH_URL=https://keycloak-qa.saleads.ai/realms/sale-ads/protocol/openid-connect/auth?response_type=code&client_id=front&redirect_uri=https%3A%2F%2Fqa.saleads.ai%2Fapi%2Fauth%2Fcallback%2Fkeycloak&scope=openid+email+profile+offline_access&code_challenge=...&code_challenge_method=S256
 ```
 
 ## Ejecución

@@ -32,8 +32,8 @@ export class KeycloakLoginPage extends BasePage {
 
   getDefaultAuthUrl() {
     const realm = process.env.KEYCLOAK_REALM || 'sale-ads';
-    const redirectUri = encodeURIComponent('https://saleads.ai/api/auth/callback/keycloak');
-    const codeChallenge = process.env.CODE_CHALLENGE || 'F6enb-xtgo-1e8c5QCEg7eU91J34lBbbdOSTMbZtx64';
+    const redirectUri = encodeURIComponent('https://qa.saleads.ai/api/auth/callback/keycloak');
+    const codeChallenge = process.env.CODE_CHALLENGE || 'A0S4Gsbad3uo3cnXBA9xtupCW4M91Wi8y2CFr0rw3QA';
     return `${this.baseUrl}/realms/${realm}/protocol/openid-connect/auth?response_type=code&client_id=front&redirect_uri=${redirectUri}&scope=openid%20email%20profile%20offline_access&code_challenge=${encodeURIComponent(codeChallenge)}&code_challenge_method=S256`;
   }
 
@@ -106,6 +106,12 @@ export class KeycloakLoginPage extends BasePage {
     const titulo = this.page.locator('h1, h2, [class*="title"], [class*="heading"]').filter({ hasText: regex }).first();
     if (await titulo.isVisible().catch(() => false)) return true;
     return this.page.getByText(regex).first().isVisible().catch(() => false);
+  }
+
+  /** Clic en el botón Google (puede abrir popup o redirigir en la misma pestaña) */
+  async clickBotonGoogle() {
+    const boton = this.page.locator(this.selectors.botonGoogle).first();
+    await boton.click({ timeout: 10000 });
   }
 
   /** Clic en el botón Microsoft (puede abrir popup o redirigir en la misma pestaña) */

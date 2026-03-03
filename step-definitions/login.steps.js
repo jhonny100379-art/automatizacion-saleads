@@ -28,6 +28,10 @@ Then('debo ver la pantalla {string} con las opciones de Google y Microsoft', asy
   expect(visible).toBeTruthy();
 });
 
+When('hago clic en el botón Google', async function () {
+  await this.loginPage.clickBotonGoogle();
+});
+
 When('hago clic en el botón Microsoft', async function () {
   this.popupMicrosoft = null;
   const context = this.page.context();

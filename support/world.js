@@ -19,7 +19,7 @@ class World {
     this.browser = null;
     this.context = null;
     this.page = null;
-    this.baseUrl = process.env.BASE_URL || 'https://keycloak.saleads.ai';
+    this.baseUrl = process.env.BASE_URL || 'https://keycloak-qa.saleads.ai';
   }
 
   async init() {

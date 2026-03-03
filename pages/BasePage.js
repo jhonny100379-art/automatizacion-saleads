@@ -4,7 +4,7 @@
 export class BasePage {
   constructor(page, baseUrl) {
     this.page = page;
-    this.baseUrl = baseUrl || 'https://keycloak.saleads.ai';
+    this.baseUrl = baseUrl || 'https://keycloak-qa.saleads.ai';
   }
 
   async goto(path = '') {

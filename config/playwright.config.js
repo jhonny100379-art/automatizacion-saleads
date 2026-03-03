@@ -11,7 +11,7 @@ export default defineConfig({
     ['list'],
   ],
   use: {
-    baseURL: process.env.BASE_URL || 'https://keycloak.saleads.ai',
+    baseURL: process.env.BASE_URL || 'https://keycloak-qa.saleads.ai',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
