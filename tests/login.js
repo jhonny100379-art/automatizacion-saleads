@@ -15,7 +15,7 @@ import readline from 'readline';
 const BASE_URL = process.env.BASE_URL || 'https://keycloak-qa.saleads.ai';
 const REALM = process.env.KEYCLOAK_REALM || 'sale-ads';
 const REDIRECT_URI = encodeURIComponent('https://qa.saleads.ai/api/auth/callback/keycloak');
-const CODE_CHALLENGE = process.env.CODE_CHALLENGE || 'A0S4Gsbad3uo3cnXBA9xtupCW4M91Wi8y2CFr0rw3QA';
+const CODE_CHALLENGE = process.env.CODE_CHALLENGE || '3C24OuGiTEtZ4m2Ljcu9Z7MN8iAJ0R_AtSp9C9_aEm4';
 
 const LOGIN_URL = process.env.AUTH_URL || `${BASE_URL}/realms/${REALM}/protocol/openid-connect/auth?response_type=code&client_id=front&redirect_uri=${REDIRECT_URI}&scope=openid%20email%20profile%20offline_access&code_challenge=${encodeURIComponent(CODE_CHALLENGE)}&code_challenge_method=S256`;
 

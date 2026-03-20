@@ -33,7 +33,7 @@ export class KeycloakLoginPage extends BasePage {
   getDefaultAuthUrl() {
     const realm = process.env.KEYCLOAK_REALM || 'sale-ads';
     const redirectUri = encodeURIComponent('https://qa.saleads.ai/api/auth/callback/keycloak');
-    const codeChallenge = process.env.CODE_CHALLENGE || 'A0S4Gsbad3uo3cnXBA9xtupCW4M91Wi8y2CFr0rw3QA';
+    const codeChallenge = process.env.CODE_CHALLENGE || '3C24OuGiTEtZ4m2Ljcu9Z7MN8iAJ0R_AtSp9C9_aEm4';
     return `${this.baseUrl}/realms/${realm}/protocol/openid-connect/auth?response_type=code&client_id=front&redirect_uri=${redirectUri}&scope=openid%20email%20profile%20offline_access&code_challenge=${encodeURIComponent(codeChallenge)}&code_challenge_method=S256`;
   }
 
